@@ -36,25 +36,16 @@ export class GateView {
     ctx.scale(proj.scale, proj.scale);
 
     const gateWidth = gate.width;
-    const gateHeight = 74;
-    const halfWidth = gateWidth / 2;
-    const laneWidth = gateWidth / 2 - 8;
 
-    // Outer Gate Archway Frame with metallic bevel and dark glass backplate
-    ctx.save();
-    ctx.fillStyle = 'rgba(15, 8, 20, 0.75)';
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(-halfWidth - 6, -gateHeight - 6, gateWidth + 12, gateHeight + 12, 18);
-    ctx.fill();
-    ctx.stroke();
-    ctx.restore();
+    // -------------------------------------------------------------
+    // TWO INDEPENDENT FREESTANDING PORTALS (NO SHARED CHAIN / FRAME)
+    // -------------------------------------------------------------
+    const portalWidth = 108;
+    const portalHeight = 78;
+    const laneOffset = gateWidth * 0.28; // e.g. 78px from center
 
-    // Helper to render a high-end arcade glass lane
-    const renderLane = (
-      x: number,
-      width: number,
+    const renderIndependentPortal = (
+      centerX: number,
       op: 'multiply' | 'add',
       val: number,
       passed: boolean,
@@ -63,117 +54,133 @@ export class GateView {
       label: string
     ) => {
       ctx.save();
+      ctx.translate(centerX, 0);
       const text = op === 'multiply' ? `×${val}` : `+${val}`;
 
       if (passed) {
-        ctx.fillStyle = 'rgba(30, 41, 59, 0.6)';
+        // Passed portal: inactive dark glass
+        ctx.fillStyle = 'rgba(20, 25, 35, 0.6)';
         ctx.strokeStyle = '#475569';
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.roundRect(x, -gateHeight, width, gateHeight, 14);
+        ctx.roundRect(-portalWidth / 2, -portalHeight, portalWidth, portalHeight, 16);
         ctx.fill();
         ctx.stroke();
 
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = 'bold 22px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(text, x + width / 2, -gateHeight / 2);
+        ctx.fillText(text, 0, -portalHeight / 2);
         ctx.restore();
         return;
       }
 
-      // 1. Glowing outer border
+      // 1. Freestanding ground pedestal shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+      ctx.beginPath();
+      ctx.ellipse(0, 4, portalWidth * 0.55, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 2. Freestanding Ground Base Pedestal
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      ctx.strokeStyle = baseColor;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(-portalWidth / 2 - 4, -8, portalWidth + 8, 12, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      // 3. Glowing neon energy portal archway
       ctx.shadowColor = glowColor;
-      ctx.shadowBlur = 14;
+      ctx.shadowBlur = 16;
       ctx.strokeStyle = baseColor;
       ctx.lineWidth = 3.5;
 
-      // 2. High-contrast energetic glass gradient fill
-      const laneGrad = ctx.createLinearGradient(x, -gateHeight, x, 0);
+      // Volumetric energetic vertical gradient
+      const portalGrad = ctx.createLinearGradient(0, -portalHeight, 0, 0);
       if (op === 'multiply') {
-        // Vibrant Amber/Gold or Royal Violet
-        laneGrad.addColorStop(0, 'rgba(245, 158, 11, 0.65)');
-        laneGrad.addColorStop(0.5, 'rgba(217, 119, 6, 0.4)');
-        laneGrad.addColorStop(1, 'rgba(180, 83, 9, 0.65)');
+        portalGrad.addColorStop(0, 'rgba(245, 158, 11, 0.75)');
+        portalGrad.addColorStop(0.5, 'rgba(217, 119, 6, 0.45)');
+        portalGrad.addColorStop(1, 'rgba(180, 83, 9, 0.7)');
       } else {
-        // Electric Cyan / Teal
-        laneGrad.addColorStop(0, 'rgba(6, 182, 212, 0.65)');
-        laneGrad.addColorStop(0.5, 'rgba(14, 116, 144, 0.4)');
-        laneGrad.addColorStop(1, 'rgba(8, 145, 178, 0.65)');
+        portalGrad.addColorStop(0, 'rgba(6, 182, 212, 0.75)');
+        portalGrad.addColorStop(0.5, 'rgba(14, 116, 144, 0.45)');
+        portalGrad.addColorStop(1, 'rgba(8, 145, 178, 0.7)');
       }
-      ctx.fillStyle = laneGrad;
+      ctx.fillStyle = portalGrad;
 
       ctx.beginPath();
-      ctx.roundRect(x, -gateHeight, width, gateHeight, 14);
+      ctx.roundRect(-portalWidth / 2, -portalHeight, portalWidth, portalHeight, 16);
       ctx.fill();
       ctx.stroke();
 
-      // Reset shadow for crisp inner elements
+      // Clear shadow for crisp interior
       ctx.shadowBlur = 0;
 
-      // 3. Inner glass bevel rim
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+      // 4. Inner glass reflection bevel
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
       ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.roundRect(x + 2, -gateHeight + 2, width - 4, gateHeight - 4, 12);
+      ctx.roundRect(-portalWidth / 2 + 3, -portalHeight + 3, portalWidth - 6, portalHeight - 6, 13);
       ctx.stroke();
 
-      // 4. Volumetric specular glass reflection (curved top sheen)
-      const sheenGrad = ctx.createLinearGradient(x, -gateHeight + 3, x, -gateHeight + gateHeight * 0.45);
-      sheenGrad.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
+      // 5. Curved top specular glass sheen
+      const sheenGrad = ctx.createLinearGradient(0, -portalHeight + 4, 0, -portalHeight + 32);
+      sheenGrad.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
       sheenGrad.addColorStop(1, 'rgba(255, 255, 255, 0.05)');
       ctx.fillStyle = sheenGrad;
       ctx.beginPath();
-      ctx.roundRect(x + 4, -gateHeight + 3, width - 8, gateHeight * 0.4, 10);
+      ctx.roundRect(-portalWidth / 2 + 5, -portalHeight + 4, portalWidth - 10, 26, 10);
       ctx.fill();
 
-      // 5. Sleek frosted header badge pill
-      const badgeW = width * 0.72;
-      const badgeH = 15;
-      const badgeX = x + (width - badgeW) / 2;
-      const badgeY = -gateHeight + 7;
-      ctx.fillStyle = 'rgba(15, 8, 20, 0.55)';
+      // 6. Left & Right vertical energy side pillars
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.fillRect(-portalWidth / 2 + 4, -portalHeight + 12, 3, portalHeight - 24);
+      ctx.fillRect(portalWidth / 2 - 7, -portalHeight + 12, 3, portalHeight - 24);
+
+      // 7. Frosted top header badge
+      const badgeW = portalWidth * 0.78;
+      const badgeH = 16;
+      ctx.fillStyle = 'rgba(15, 8, 20, 0.65)';
       ctx.beginPath();
-      ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 7);
+      ctx.roundRect(-badgeW / 2, -portalHeight + 7, badgeW, badgeH, 8);
       ctx.fill();
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
       ctx.lineWidth = 1;
       ctx.stroke();
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(label, badgeX + badgeW / 2, badgeY + badgeH / 2);
+      ctx.fillText(label, 0, -portalHeight + 7 + badgeH / 2);
 
-      // 6. Large 3D Neon numeric multiplier value
-      const valY = -gateHeight / 2 + 10;
-      // Drop shadow for number
+      // 8. 3D Neon numeric multiplier value
+      const numY = -portalHeight / 2 + 10;
       ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
       ctx.font = '900 28px system-ui, -apple-system, sans-serif';
-      ctx.fillText(text, x + width / 2, valY + 2);
+      ctx.fillText(text, 0, numY + 2);
 
-      // Glowing text
       ctx.shadowColor = glowColor;
       ctx.shadowBlur = 12;
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(text, x + width / 2, valY);
+      ctx.fillText(text, 0, numY);
 
       ctx.restore();
     };
 
-    // 1. LEFT LANE
+    // 1. LEFT INDEPENDENT PORTAL
     const leftColor = gate.leftOp === 'multiply' ? '#c084fc' : '#38bdf8';
-    const leftGlow = gate.leftOp === 'multiply' ? 'rgba(192, 132, 252, 0.7)' : 'rgba(56, 189, 248, 0.7)';
+    const leftGlow = gate.leftOp === 'multiply' ? 'rgba(192, 132, 252, 0.8)' : 'rgba(56, 189, 248, 0.8)';
     const leftLabel = gate.leftOp === 'multiply' ? 'SWARM' : 'REINFORCE';
-    renderLane(-halfWidth + 4, laneWidth, gate.leftOp, gate.leftValue, gate.leftPassed, leftColor, leftGlow, leftLabel);
+    renderIndependentPortal(-laneOffset, gate.leftOp, gate.leftValue, gate.leftPassed, leftColor, leftGlow, leftLabel);
 
-    // 2. RIGHT LANE
+    // 2. RIGHT INDEPENDENT PORTAL (with wide open gap in the middle)
     const rightColor = gate.rightOp === 'multiply' ? '#fbbf24' : '#34d399';
-    const rightGlow = gate.rightOp === 'multiply' ? 'rgba(251, 191, 36, 0.7)' : 'rgba(52, 211, 153, 0.7)';
+    const rightGlow = gate.rightOp === 'multiply' ? 'rgba(251, 191, 36, 0.8)' : 'rgba(52, 211, 153, 0.8)';
     const rightLabel = gate.rightOp === 'multiply' ? 'CASCADE' : 'REINFORCE';
-    renderLane(4, laneWidth, gate.rightOp, gate.rightValue, gate.rightPassed, rightColor, rightGlow, rightLabel);
+    renderIndependentPortal(laneOffset, gate.rightOp, gate.rightValue, gate.rightPassed, rightColor, rightGlow, rightLabel);
 
     ctx.restore();
   }
@@ -192,50 +199,89 @@ export class GateView {
     ctx.scale(proj.scale, proj.scale);
 
     const bWidth = biofilm.width;
-    const bHeight = biofilm.height;
+    const bHeight = 48; // Sleeker, more organic profile
 
-    // Translucent gelatinous biofilm barrier
-    const bioGrad = ctx.createLinearGradient(-bWidth / 2, -bHeight / 2, bWidth / 2, bHeight / 2);
-    bioGrad.addColorStop(0, 'rgba(168, 85, 247, 0.65)');
-    bioGrad.addColorStop(0.5, 'rgba(236, 72, 153, 0.75)');
-    bioGrad.addColorStop(1, 'rgba(217, 70, 239, 0.65)');
-    ctx.fillStyle = bioGrad;
+    // 1. Organic Extracellular Slime Matrix (Wavy Bezier Web)
+    const time = Date.now() * 0.003;
+    ctx.save();
+    const slimeGrad = ctx.createLinearGradient(-bWidth / 2, -bHeight / 2, bWidth / 2, bHeight / 2);
+    slimeGrad.addColorStop(0, 'rgba(147, 51, 234, 0.65)');
+    slimeGrad.addColorStop(0.5, 'rgba(236, 72, 153, 0.7)');
+    slimeGrad.addColorStop(1, 'rgba(168, 85, 247, 0.65)');
+    ctx.fillStyle = slimeGrad;
     ctx.strokeStyle = '#f472b6';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2.5;
 
     ctx.beginPath();
-    ctx.roundRect(-bWidth / 2, -bHeight / 2, bWidth, bHeight, 18);
+    ctx.moveTo(-bWidth / 2, -bHeight / 2);
+    // Wavy top edge
+    for (let x = -bWidth / 2; x <= bWidth / 2; x += 30) {
+      const wave = Math.sin(time + x * 0.05) * 6;
+      ctx.lineTo(x, -bHeight / 2 + wave);
+    }
+    ctx.lineTo(bWidth / 2, bHeight / 2);
+    // Wavy bottom edge with dripping tendrils
+    for (let x = bWidth / 2; x >= -bWidth / 2; x -= 30) {
+      const wave = Math.sin(time * 1.2 + x * 0.04) * 8;
+      ctx.lineTo(x, bHeight / 2 + wave);
+    }
+    ctx.closePath();
     ctx.fill();
     ctx.stroke();
 
-    // Viscous bubbles inside biofilm
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    [[-80, -10, 10], [-30, 8, 8], [40, -8, 12], [90, 6, 9]].forEach(([bx, by, br]) => {
+    // Floating viscous bubbles inside matrix
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+    [[-100, -6, 8], [-40, 6, 7], [30, -5, 10], [90, 4, 8]].forEach(([bx, by, br]) => {
       ctx.beginPath();
       ctx.arc(bx, by, br, 0, Math.PI * 2);
       ctx.fill();
     });
+    ctx.restore();
 
-    // Biofilm HP bar
+    // 2. High-Tech Floating Barrier HUD Header
     const hpRatio = Math.max(0, biofilm.hp / biofilm.maxHp);
-    const hpW = 120;
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+    const hpW = 140;
+    const hpH = 10;
+    const plateY = -bHeight / 2 - 20;
+
+    // Dark glass backing plate
+    ctx.fillStyle = 'rgba(15, 8, 20, 0.85)';
     ctx.beginPath();
-    ctx.roundRect(-hpW / 2, -bHeight / 2 - 16, hpW, 9, 4);
+    ctx.roundRect(-hpW / 2 - 6, plateY - 14, hpW + 12, hpH + 22, 10);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(244, 114, 182, 0.6)';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    // Barrier label
+    ctx.fillStyle = '#fdf2f8';
+    ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('BIOFILM MATRIX', 0, plateY - 5);
+
+    // Segmented HP Bar
+    ctx.fillStyle = 'rgba(30, 41, 59, 0.9)';
+    ctx.beginPath();
+    ctx.roundRect(-hpW / 2, plateY + 4, hpW, hpH, 4);
     ctx.fill();
 
-    ctx.fillStyle = '#ec4899';
+    const hpGrad = ctx.createLinearGradient(-hpW / 2, 0, hpW / 2, 0);
+    hpGrad.addColorStop(0, '#f43f5e');
+    hpGrad.addColorStop(0.5, '#ec4899');
+    hpGrad.addColorStop(1, '#a855f7');
+    ctx.fillStyle = hpGrad;
     ctx.beginPath();
-    ctx.roundRect(-hpW / 2 + 1, -bHeight / 2 - 15, (hpW - 2) * hpRatio, 7, 3);
+    ctx.roundRect(-hpW / 2 + 1, plateY + 5, Math.max(0, (hpW - 2) * hpRatio), hpH - 2, 3);
     ctx.fill();
 
-    // Reward icon text
+    // Reward indicator on matrix
     ctx.fillStyle = '#fef08a';
     ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const rewardText = biofilm.rewardType === 'coins' ? `💰 ${biofilm.rewardAmount}` : `★ FREE ${biofilm.rewardType.toUpperCase()}`;
-    ctx.fillText(rewardText, 0, 0);
+    const rewardText = biofilm.rewardType === 'coins' ? `💰 +${biofilm.rewardAmount} COINS` : `★ FREE ${biofilm.rewardType.toUpperCase()}`;
+    ctx.fillText(rewardText, 0, 2);
 
     ctx.restore();
   }

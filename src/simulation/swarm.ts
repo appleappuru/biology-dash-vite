@@ -53,9 +53,9 @@ export function updateSwarmFlocking(
   corridorHalfWidth: number = 190
 ): void {
   const offsets = computePhyllotaxisOffsets(defenders.length, {
-    spacing: 21,
+    spacing: 30,
     corridorHalfWidth,
-    longitudinalStretch: 1.3
+    longitudinalStretch: 1.35
   });
 
   const springK = 14.0;

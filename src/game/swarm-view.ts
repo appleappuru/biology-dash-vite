@@ -54,9 +54,9 @@ export class SwarmView {
     // 1. Soft directional 3/4 perspective ground contact shadow
     const shadowScale = proj.scale;
     const shadowR = (unit.kind === 'macrophage' ? 24 : 18) * shadowScale;
-    ctx.fillStyle = 'rgba(25, 5, 20, 0.32)';
+    ctx.fillStyle = 'rgba(20, 5, 25, 0.28)';
     ctx.beginPath();
-    ctx.ellipse(proj.x, proj.y + 22 * shadowScale, shadowR, shadowR * 0.38, 0, 0, Math.PI * 2);
+    ctx.ellipse(proj.x, proj.y + 16 * shadowScale, shadowR, shadowR * 0.35, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // 2. Transform for squash and stretch
