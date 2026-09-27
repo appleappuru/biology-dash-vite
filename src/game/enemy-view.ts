@@ -76,7 +76,7 @@ export class EnemyView {
 
     if (this.isLoaded && this.spriteImage) {
       const coords = this.speciesCoordMap[microbe.species] || { col: 0, row: 0 };
-      const frameSize = 128;
+      const frameSize = this.spriteImage.width / 3;
       const srcX = coords.col * frameSize;
       const srcY = coords.row * frameSize;
 

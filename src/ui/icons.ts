@@ -74,21 +74,42 @@ export const ICONS = {
     <svg viewBox="0 0 40 40" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="amoxGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#fed7aa"/>
-          <stop offset="50%" stop-color="#f97316"/>
-          <stop offset="100%" stop-color="#c2410c"/>
+          <stop offset="0%" stop-color="#ffedd5"/>
+          <stop offset="30%" stop-color="#fb923c"/>
+          <stop offset="85%" stop-color="#ea580c"/>
+          <stop offset="100%" stop-color="#9a3412"/>
         </linearGradient>
         <linearGradient id="amoxGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#ffffff"/>
-          <stop offset="50%" stop-color="#fef08a"/>
-          <stop offset="100%" stop-color="#eab308"/>
+          <stop offset="0%" stop-color="#fef9c3"/>
+          <stop offset="35%" stop-color="#facc15"/>
+          <stop offset="85%" stop-color="#ca8a04"/>
+          <stop offset="100%" stop-color="#854d0e"/>
         </linearGradient>
+        <filter id="amoxShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="1" dy="2.5" stdDeviation="2" flood-color="#431407" flood-opacity="0.5"/>
+        </filter>
+        <clipPath id="amoxClip">
+          <rect x="12" y="7" width="16" height="26" rx="8" ry="8"/>
+        </clipPath>
       </defs>
-      <g transform="rotate(45 20 20)">
-        <rect x="12" y="8" width="16" height="12" rx="8" fill="url(#amoxGrad1)"/>
-        <rect x="12" y="20" width="16" height="12" rx="8" fill="url(#amoxGrad2)"/>
-        <line x1="12" y1="20" x2="28" y2="20" stroke="#ffffff" stroke-width="1.5"/>
-        <ellipse cx="17" cy="14" rx="2" ry="4" fill="#ffffff" opacity="0.6"/>
+      <g transform="rotate(45 20 20)" filter="url(#amoxShadow)">
+        <g clip-path="url(#amoxClip)">
+          <!-- Top Orange Half -->
+          <rect x="12" y="7" width="16" height="13" fill="url(#amoxGrad1)"/>
+          <!-- Bottom Yellow Half -->
+          <rect x="12" y="20" width="16" height="13" fill="url(#amoxGrad2)"/>
+          <!-- Center seam ring -->
+          <line x1="12" y1="20" x2="28" y2="20" stroke="#ffffff" stroke-width="1.2" opacity="0.9"/>
+          <line x1="12" y1="20.8" x2="28" y2="20.8" stroke="#78350f" stroke-width="0.8" opacity="0.4"/>
+          <!-- 3D Cylindrical Shadow Along Right Edge -->
+          <rect x="25" y="7" width="3" height="26" fill="#000000" opacity="0.25"/>
+          <!-- Long Specular Highlight Sheen Down Left Edge -->
+          <path d="M 14.5 10 Q 14.5 20 14.5 29" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+          <!-- Specular Glint Top Cap -->
+          <ellipse cx="16.5" cy="11" rx="2.5" ry="1.5" fill="#ffffff" opacity="0.9"/>
+        </g>
+        <!-- Pill Rim Stroke -->
+        <rect x="12" y="7" width="16" height="26" rx="8" ry="8" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
       </g>
     </svg>
   `,
@@ -97,16 +118,37 @@ export const ICONS = {
     <svg viewBox="0 0 40 40" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="doxyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#e0f2fe"/>
-          <stop offset="45%" stop-color="#38bdf8"/>
-          <stop offset="100%" stop-color="#0284c7"/>
+          <stop offset="0%" stop-color="#f0f9ff"/>
+          <stop offset="30%" stop-color="#38bdf8"/>
+          <stop offset="75%" stop-color="#0284c7"/>
+          <stop offset="100%" stop-color="#0369a1"/>
         </linearGradient>
+        <linearGradient id="doxyCapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="40%" stop-color="#bae6fd"/>
+          <stop offset="100%" stop-color="#7dd3fc"/>
+        </linearGradient>
+        <filter id="doxyShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="1" dy="2.5" stdDeviation="2" flood-color="#0c4a6e" flood-opacity="0.5"/>
+        </filter>
+        <clipPath id="doxyClip">
+          <rect x="12" y="8" width="16" height="24" rx="8" ry="8"/>
+        </clipPath>
       </defs>
-      <g transform="rotate(-30 20 20)">
-        <rect x="12" y="10" width="16" height="20" rx="8" fill="url(#doxyGrad)" stroke="#bae6fd" stroke-width="1.5"/>
-        <line x1="12" y1="20" x2="28" y2="20" stroke="#ffffff" stroke-width="1.5"/>
-        <circle cx="16" cy="15" r="2" fill="#ffffff" opacity="0.75"/>
-        <circle cx="24" cy="25" r="2" fill="#ffffff" opacity="0.5"/>
+      <g transform="rotate(-35 20 20)" filter="url(#doxyShadow)">
+        <g clip-path="url(#doxyClip)">
+          <!-- Top Ice-Blue Cap -->
+          <rect x="12" y="8" width="16" height="12" fill="url(#doxyCapGrad)"/>
+          <!-- Bottom Deep-Cyan Body -->
+          <rect x="12" y="20" width="16" height="12" fill="url(#doxyGrad)"/>
+          <!-- Center seam -->
+          <line x1="12" y1="20" x2="28" y2="20" stroke="#ffffff" stroke-width="1.2"/>
+          <!-- Shading & Highlights -->
+          <rect x="25" y="8" width="3" height="24" fill="#000000" opacity="0.2"/>
+          <path d="M 14.5 11 L 14.5 28" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+          <circle cx="16" cy="11.5" r="1.5" fill="#ffffff"/>
+        </g>
+        <rect x="12" y="8" width="16" height="24" rx="8" ry="8" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
       </g>
     </svg>
   `,
@@ -114,31 +156,59 @@ export const ICONS = {
   cefepime: `
     <svg viewBox="0 0 40 40" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="cefGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#d1fae5"/>
-          <stop offset="40%" stop-color="#10b981"/>
-          <stop offset="100%" stop-color="#047857"/>
+        <linearGradient id="cefFacet1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#a7f3d0"/>
+          <stop offset="100%" stop-color="#10b981"/>
         </linearGradient>
+        <linearGradient id="cefFacet2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#34d399"/>
+          <stop offset="100%" stop-color="#059669"/>
+        </linearGradient>
+        <linearGradient id="cefFacet3" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#047857"/>
+          <stop offset="100%" stop-color="#064e3b"/>
+        </linearGradient>
+        <filter id="cefShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#064e3b" flood-opacity="0.5"/>
+        </filter>
       </defs>
-      <polygon points="20,6 32,13 32,27 20,34 8,27 8,13" fill="url(#cefGrad)" stroke="#a7f3d0" stroke-width="1.8"/>
-      <circle cx="20" cy="20" r="5" fill="#ffffff" opacity="0.45"/>
-      <ellipse cx="16" cy="14" rx="2" ry="4" fill="#ffffff" opacity="0.7" transform="rotate(-30 16 14)"/>
+      <g filter="url(#cefShadow)">
+        <!-- 3D Emerald Gemstone Facets -->
+        <polygon points="20,5 33,13 20,20" fill="url(#cefFacet1)"/>
+        <polygon points="20,5 7,13 20,20" fill="#6ee7b7"/>
+        <polygon points="7,13 20,20 20,35 7,27" fill="url(#cefFacet2)"/>
+        <polygon points="33,13 20,20 20,35 33,27" fill="url(#cefFacet3)"/>
+        <!-- Gemstone Outer Outline -->
+        <polygon points="20,5 33,13 33,27 20,35 7,27 7,13" fill="none" stroke="#d1fae5" stroke-width="1.5"/>
+        <line x1="20" y1="5" x2="20" y2="35" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+        <line x1="7" y1="13" x2="33" y2="13" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+        <!-- Specular Glint -->
+        <circle cx="16" cy="11" r="2" fill="#ffffff" opacity="0.9"/>
+      </g>
     </svg>
   `,
 
   micafungin: `
     <svg viewBox="0 0 40 40" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id="micaGrad" cx="35%" cy="35%" r="65%">
-          <stop offset="0%" stop-color="#fdf4ff"/>
-          <stop offset="35%" stop-color="#f0abfc"/>
-          <stop offset="75%" stop-color="#c026d3"/>
+        <radialGradient id="micaGrad" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="25%" stop-color="#fdf4ff"/>
+          <stop offset="55%" stop-color="#e879f9"/>
+          <stop offset="85%" stop-color="#a21caf"/>
           <stop offset="100%" stop-color="#701a75"/>
         </radialGradient>
+        <filter id="micaShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-color="#4a044e" flood-opacity="0.5"/>
+        </filter>
       </defs>
-      <circle cx="20" cy="20" r="15" fill="url(#micaGrad)" stroke="#f5d0fe" stroke-width="2"/>
-      <circle cx="20" cy="20" r="8" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,3"/>
-      <ellipse cx="16" cy="14" rx="4" ry="2" fill="#ffffff" opacity="0.75" transform="rotate(-30 16 14)"/>
+      <!-- Glowing Radial Aura -->
+      <circle cx="20" cy="20" r="16.5" fill="none" stroke="#f0abfc" stroke-width="1.5" stroke-dasharray="2,3" opacity="0.75"/>
+      <!-- Glossy 3D Crystal Pearl Orb -->
+      <circle cx="20" cy="20" r="14" fill="url(#micaGrad)" stroke="#fdf4ff" stroke-width="1.5" filter="url(#micaShadow)"/>
+      <!-- Specular Highlight Curve -->
+      <ellipse cx="16" cy="14" rx="4" ry="2" fill="#ffffff" opacity="0.85" transform="rotate(-30 16 14)"/>
+      <circle cx="23" cy="23" r="1.5" fill="#ffffff" opacity="0.5"/>
     </svg>
   `,
 
